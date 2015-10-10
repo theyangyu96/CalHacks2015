@@ -135,7 +135,15 @@ function addRouteShapeToMap(route){
       polyline.addEventListener('tap', function(evt){
         console.log(evt.type, evt.currentPointer.type);
         //Change color of polyline segment
-        
+        strip = evt.currentTarget.getStrip;
+        var newPolyLine = new H.map.Polyline(strip, {
+          style: {
+            lineWidth: 4,
+            strokeColor: 'rgba(128,128,0,0.7'
+          }
+        });
+        map.addObject(newPolyLine);
+        map.removeObject(evt.currentTarget);
       });
       map.addObject(polyline);
       polylineArray.push(polyline);
