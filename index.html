@@ -59,6 +59,7 @@ var coords = [];
 var x;
 var y;
 var num_marker = 0;
+var route_counter = 0;
   map.addEventListener('dbltap', function(evt) {
       // Log 'tap' and 'mouse' events:
       console.log(evt.type, evt.currentPointer);
@@ -69,8 +70,9 @@ var num_marker = 0;
       coords.push(pt);
       addMarkersToMap(map, pt.lat, pt.lng);
       num_marker +=1;
-      if (num_marker == 2) {
+      if (num_marker % 2 == 0) {
         calculateRouteFromAtoB(platform);
+        route_counter +=1;
       }
 
   });
@@ -83,8 +85,8 @@ function calculateRouteFromAtoB (platform) {
     routeRequestParams = {
       mode: 'shortest;pedestrian',
       representation: 'display',
-      waypoint0: coords[0].lat+","+coords[0].lng, // St Paul's Cathedral
-      waypoint1: coords[1].lat+","+coords[1].lng,  // Tate Modern
+      waypoint0: coords[2*route_counter].lat+","+coords[2*route_counter].lng, // St Paul's Cathedral
+      waypoint1: coords[2*route_counter+1].lat+","+coords[2*route_counter+1].lng,  // Tate Modern
       routeattributes: 'waypoints,summary,shape,legs',
       maneuverattributes: 'direction,action'
     };
@@ -152,7 +154,6 @@ function createPolyline (pointsArray){
           strokeColor: 'rgba(128,0,255,0.7)'
         }
       });
-
         var score = prompt("How smooth is this road? Rate 1 - 10","");
         map.addObject(newPolyline);
         map.removeObject(evt.target);
