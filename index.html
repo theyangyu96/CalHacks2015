@@ -115,24 +115,38 @@ function onError(error) {
 
 function addRouteShapeToMap(route){
   var strip = new H.geo.Strip(),
-    routeShape = route.shape,
-    polyline;
+    routeShape = route.shape;
 
+  //Initialize array to hold polyline segments  
+  var polylineArray = new Array();
+
+  //for each point create a polyline connecting it to previous point
+  var counter = 0;
   routeShape.forEach(function(point) {
     var parts = point.split(',');
     strip.pushLatLngAlt(parts[0], parts[1]);
+    if(counter != 0){
+      var polyline = new H.map.Polyline(strip, {
+        style: {
+          lineWidth: 4,
+          strokeColor: 'rgba(0,128,255,0.7'
+        }
+      });
+      polyline.addEventListener('tap', function(evt){
+        console.log(evt.type, evt.currentPointer.type);
+        //Change color of polyline segment
+        
+      });
+      map.addObject(polyline);
+      polylineArray.push(polyline);
+    }
+    counter++;
   });
 
-  polyline = new H.map.Polyline(strip, {
-    style: {
-      lineWidth: 4,
-      strokeColor: 'rgba(0, 128, 255, 0.7)'
-    }
-  });
   // Add the polyline to the map
-  map.addObject(polyline);
+  //map.addObject(polyline);
   // And zoom to its bounding rectangle
-  map.setViewBounds(polyline.getBounds(), true);
+  //map.setViewBounds(polyline.getBounds(), true);
 }
 
 // Create the default UI components
