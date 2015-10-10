@@ -114,47 +114,51 @@ function onError(error) {
 }
 
 function addRouteShapeToMap(route){
-  var strip = new H.geo.Strip(),
-    routeShape = route.shape;
-
-  //Initialize array to hold polyline segments  
-  var polylineArray = new Array();
-
-  //for each point create a polyline connecting it to previous point
-  var counter = 0;
+  routeShape = route.shape;
+  var pointsArray = [];
   routeShape.forEach(function(point) {
     var parts = point.split(',');
-    strip.pushLatLngAlt(parts[0], parts[1]);
-    if(counter != 0){
-      var polyline = new H.map.Polyline(strip, {
-        style: {
-          lineWidth: 4,
-          strokeColor: 'rgba(0,128,255,0.7'
-        }
-      });
-      polyline.addEventListener('tap', function(evt){
-        console.log(evt.type, evt.currentPointer.type);
-        //Change color of polyline segment
-        strip = evt.currentTarget.getStrip;
-        var newPolyLine = new H.map.Polyline(strip, {
-          style: {
-            lineWidth: 4,
-            strokeColor: 'rgba(128,128,0,0.7'
-          }
-        });
-        map.addObject(newPolyLine);
-        map.removeObject(evt.currentTarget);
-      });
-      map.addObject(polyline);
-      polylineArray.push(polyline);
-    }
-    counter++;
-  });
+    pointsArray.push({"lat": parts[0], "lng": parts[1]});
+    });
+    createPolyline(pointsArray);
 
   // Add the polyline to the map
   //map.addObject(polyline);
   // And zoom to its bounding rectangle
   //map.setViewBounds(polyline.getBounds(), true);
+}
+
+function createPolyline (pointsArray){
+  var strip;
+  for (i = 0; i < pointsArray.length-1; i++) {
+   var strip = new H.geo.Strip();
+   strip.pushLatLngAlt(pointsArray[i].lat, pointsArray[i].lng);
+   strip.pushLatLngAlt(pointsArray[i+1].lat, pointsArray[i+1].lng);
+   var polyline = new H.map.Polyline(strip, {
+        style: {
+          lineWidth: 4,
+          strokeColor: 'rgba(0,128,255,0.7)'
+        }
+      });
+      console.log(polyline);
+      polyline.addEventListener('tap', function(evt){
+        console.log(evt.type, evt.currentPointer.type);
+        //Change color of polyline segment
+        strip = evt.target.getStrip();
+        console.log(strip);
+        var newPolyline = new H.map.Polyline(strip, {
+        style: {
+          lineWidth: 4,
+          strokeColor: 'rgba(128,0,255,0.7)'
+        }
+      });
+
+        var score = prompt("How smooth is this road? Rate 1 - 10","");
+        map.addObject(newPolyline);
+        map.removeObject(evt.target);
+      });
+      map.addObject(polyline);
+  }
 }
 
 // Create the default UI components
