@@ -55,8 +55,10 @@ var map = new H.Map(document.getElementById('map'),
 // MapEvents enables the event system
 // Behavior implements default interactions for pan/zoom (also on mobile touch environments)
 var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+var coords = [];
 var x;
 var y;
+var num_marker = 0;
   map.addEventListener('dbltap', function(evt) {
       // Log 'tap' and 'mouse' events:
       console.log(evt.type, evt.currentPointer);
@@ -64,10 +66,74 @@ var y;
       y = evt.currentPointer.viewportY;
       var pt = map.screenToGeo(x, y);
       console.log(pt);
-      addMarkersToMap(map, pt.lat, pt.lng)
+      coords.push(pt);
+      addMarkersToMap(map, pt.lat, pt.lng);
+      num_marker +=1;
+      if (num_marker == 2) {
+        calculateRouteFromAtoB(platform);
+      }
+
   });
 
 
+
+//Routing algorithm
+function calculateRouteFromAtoB (platform) {
+  var router = platform.getRoutingService(),
+    routeRequestParams = {
+      mode: 'shortest;pedestrian',
+      representation: 'display',
+      waypoint0: coords[0].lat+","+coords[0].lng, // St Paul's Cathedral
+      waypoint1: coords[1].lat+","+coords[1].lng,  // Tate Modern
+      routeattributes: 'waypoints,summary,shape,legs',
+      maneuverattributes: 'direction,action'
+    };
+
+
+  router.calculateRoute(
+    routeRequestParams,
+    onSuccess,
+    onError
+  );
+}
+
+function onSuccess(result) {
+  var route = result.response.route[0];
+  console.log(route);
+ /*
+  * The styling of the route response on the map is entirely under the developer's control.
+  * A representitive styling can be found the full JS + HTML code of this example
+  * in the functions below:
+  */
+  addRouteShapeToMap(route);
+  
+}
+
+function onError(error) {
+  alert('Ooops!');
+}
+
+function addRouteShapeToMap(route){
+  var strip = new H.geo.Strip(),
+    routeShape = route.shape,
+    polyline;
+
+  routeShape.forEach(function(point) {
+    var parts = point.split(',');
+    strip.pushLatLngAlt(parts[0], parts[1]);
+  });
+
+  polyline = new H.map.Polyline(strip, {
+    style: {
+      lineWidth: 4,
+      strokeColor: 'rgba(0, 128, 255, 0.7)'
+    }
+  });
+  // Add the polyline to the map
+  map.addObject(polyline);
+  // And zoom to its bounding rectangle
+  map.setViewBounds(polyline.getBounds(), true);
+}
 
 // Create the default UI components
 var ui = H.ui.UI.createDefault(map, defaultLayers);
