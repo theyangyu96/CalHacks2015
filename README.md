@@ -1,3 +1,5 @@
+
+
 #Inspiration
 We are all avid skater and cyclist. We all notice that the path route provided by either Here or Google isn't best choice for riders and especially for skaters, it's easy to fall at certain bumpy place. So, we developed RiderWay to help avid riders like us to share and find best rider way.
 
