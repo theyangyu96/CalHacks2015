@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+{% block title %}
+        <title>Index Page</title>
+        <link rel="stylesheet" type="text/css"
+        href="https://js.api.here.com/v3/3.0/mapsjs-ui.css" />
+        <script type="text/javascript" charset="UTF-8"
+        src="https://js.api.here.com/v3/3.0/mapsjs-core.js"></script>
+        <script type="text/javascript" charset="UTF-8"
+        src="https://js.api.here.com/v3/3.0/mapsjs-service.js"></script>
+        <script type="text/javascript" charset="UTF-8"
+        src="https://js.api.here.com/v3/3.0/mapsjs-ui.js"></script>
+        <script type="text/javascript" charset="UTF-8"
+        src="https://js.api.here.com/v3/3.0/mapsjs-mapevents.js"></script>
+{% endblock %}
+
+{% block body %}
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-12">
+				<center>
+					<br>
+					<a href="/maps/report" class="btn btn-primary btn-default"><i class="icon-white icon-list-alt"></i> Submit a Report</a>
+					<br>
+					<br>
+				</center>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<center>
+
+				  <div id="map" style="width: 100%; height: 100vh; background: grey" />
+				  <script  type="text/javascript" charset="UTF-8" >
+				    
+				/**
+				 * Moves the map to display over Boston using viewBounds
+				 *
+				 * @param  {H.Map} map      A HERE Map instance within the application
+				 */
+				function setMapViewBounds(map){
+				  var bbox = new H.geo.Rect(37.8750,-122.2600 ,37.8675, -122.2585);
+				  map.setViewBounds(bbox);
+				}
+
+
+				function addMarkersToMap(map, lat, lng) {
+				  var Marker = new H.map.Marker({lat:lat, lng:lng});
+				  map.addObject(Marker);
+				}
+
+				// var geocodingParameters = {
+				//   //Initialize with address from text field
+				//   searchText: '210 Stadium Rim Way Berkeley California',
+				//   jsonattributes : 1
+				// };
+
+				// function geocode(platform) {
+				//   var geocoder = platform.getGeocodingService();
+
+				//   geocoder.geocode(
+				//     geocodingParameters,
+				//     onResult,
+				//     onError
+				//   );
+				// }
+
+				function onResult(result) {
+				  //TODO: Check if view is empty before accessing; display error message/empty return if empty
+				  var locations = result.response.view[0].result;
+				  addLocationsToMap(locations);
+				}
+
+				/*
+				 * Boilerplate map initialization code starts below:*/
+				 
+
+				//Step 1: initialize communication with the platform
+				var platform = new H.service.Platform({
+				  app_id: 'JJi3EJfcCSqAXMniWrE7',
+				    app_code: 'LWcyk9S8poGNtF1Kgrdh0g',
+				    useCIT: true,
+				    useHTTPS: true
+				});
+				var defaultLayers = platform.createDefaultLayers();
+
+				//Step 2: initialize a map  - not specificing a location will give a whole world view.
+				var map = new H.Map(document.getElementById('map'),
+				  defaultLayers.normal.map);
+
+				//Step 3: make the map interactive
+				// MapEvents enables the event system
+				// Behavior implements default interactions for pan/zoom (also on mobile touch environments)
+				var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+				var coords = [];
+				var x;
+				var y;
+				var num_marker = 0;
+				var route_counter = 0;
+				var score;
+				// $.ajaxSetup({async: false});
+				  map.addEventListener('tap', function(evt) {
+				      // Log 'tap' and 'mouse' events:
+				      console.log(evt.type, evt.currentPointer);
+				      x = evt.currentPointer.viewportX;
+				      y = evt.currentPointer.viewportY;
+				      var pt = map.screenToGeo(x, y);
+				      console.log(pt);
+				      coords.push(pt);
+				      addMarkersToMap(map, pt.lat, pt.lng);
+				      num_marker +=1;
+				      if (num_marker % 2 == 0) {
+				        calculateRouteFromAtoB(platform);
+				        route_counter +=1;
+				      }
+
+				  });
+
+				//Routing algorithm
+				function calculateRouteFromAtoB (platform) {
+				  var router = platform.getRoutingService(),
+				    routeRequestParams = {
+				      mode: 'shortest;pedestrian',
+				      representation: 'display',
+				      waypoint0: coords[2*route_counter].lat+","+coords[2*route_counter].lng, // St Paul's Cathedral
+				      waypoint1: coords[2*route_counter+1].lat+","+coords[2*route_counter+1].lng,  // Tate Modern
+				      routeattributes: 'waypoints,summary,shape,legs',
+				      maneuverattributes: 'direction,action'
+				    };
+
+
+				  router.calculateRoute(
+				    routeRequestParams,
+				    onSuccess,
+				    onError
+				  );
+				}
+
+				function onSuccess(result) {
+				  var route = result.response.route[0];
+				  console.log(route);
+				 /*
+				  * The styling of the route response on the map is entirely under the developer's control.
+				  * A representitive styling can be found the full JS + HTML code of this example
+				  * in the functions below:
+				  */
+				  addRouteShapeToMap(route);
+				  
+				}
+
+				function onError(error) {
+				  alert('Ooops!');
+				}
+
+				function addRouteShapeToMap(route){
+				  routeShape = route.shape;
+				  var pointsArray = [];
+				  routeShape.forEach(function(point) {
+				    var parts = point.split(',');
+				    pointsArray.push({"lat": parts[0], "lng": parts[1]});
+				    });
+				    createPolyline(pointsArray);
+
+				  // Add the polyline to the map
+				  //map.addObject(polyline);
+				  // And zoom to its bounding rectangle
+				  //map.setViewBounds(polyline.getBounds(), true);
+				}
+
+				function createPolyline (pointsArray){
+				  for (i = 0; i < pointsArray.length-1; i++) {
+				   var strip = new H.geo.Strip();
+				   
+				   strip.pushLatLngAlt(pointsArray[i].lat, pointsArray[i].lng);
+				   strip.pushLatLngAlt(pointsArray[i+1].lat, pointsArray[i+1].lng);
+				   $.post("/maps/get/", {lat1:pointsArray[i].lat, lng1:pointsArray[i].lng, lat2:pointsArray[i+1].lat, lng2:pointsArray[i+1].lng})
+				   .done (function (data) {
+				   	console.log(data);
+				   });
+				   var polyline = new H.map.Polyline(strip, {
+				        style: {
+				          lineWidth: 4,
+				          strokeColor: 'rgba(0,128,255,0.7)'
+				        }
+				      });
+				      console.log(polyline);
+				      polyline.addEventListener('tap', function(evt){
+				        console.log(evt.type, evt.currentPointer.type);
+				        //Change color of polyline segment
+				        strip = evt.target.getStrip();
+				        console.log(strip);
+				        var newPolyline = new H.map.Polyline(strip, {
+				        style: {
+				          lineWidth: 4,
+				          strokeColor: 'rgba(128,0,255,0.7)'
+				        }
+				      });
+				        var rating = prompt("How smooth is this road? Rate 1 - 10","");
+				        var tempStrip = newPolyline.getStrip().Oa;
+				        score = {a: [tempStrip[0], tempStrip[1]], b: [tempStrip[3], tempStrip[4]] , rating:rating};
+				        map.addObject(newPolyline);
+				        console.log(score);
+				        map.removeObject(evt.target);
+				        $.post("/maps/report/", score);
+				        map.addObject(polyline);
+				    });
+				  }
+				}
+
+				// Create the default UI components
+				var ui = H.ui.UI.createDefault(map, defaultLayers);
+
+				function addLocationsToMap(locations){
+				  var group = new  H.map.Group(),
+				    position,
+				    i;
+
+				  // Add a marker for each location found
+				  for (i = 0;  i < locations.length; i += 1) {
+				    position = {
+				      lat: locations[i].location.displayPosition.latitude,
+				      lng: locations[i].location.displayPosition.longitude
+				    };
+				    marker = new H.map.Marker(position);
+				    marker.label = locations[i].location.address.label;
+				    group.addObject(marker);
+				  }
+
+				  group.addEventListener('tap', function (evt) {
+				    map.setCenter(evt.target.getPosition());
+				    openBubble(
+				       evt.target.getPosition(), evt.target.label);
+				  }, false);
+
+				  // Add the locations group to the map
+				  map.addObject(group);
+				  map.setCenter(group.getBounds().getCenter());
+				}
+
+				// Now use the map as required...
+				// geocode(platform);
+
+				setMapViewBounds(map);
+				  </script>
+				
+				</center>
+			</div>
+		</div>
+	</div>
+{% endblock %}
