@@ -85,6 +85,7 @@ var y;
 var num_marker = 0;
 var route_counter = 0;
 var score;
+$.ajaxSetup({async: false});
   map.addEventListener('tap', function(evt) {
       // Log 'tap' and 'mouse' events:
       console.log(evt.type, evt.currentPointer);
@@ -154,11 +155,12 @@ function addRouteShapeToMap(route){
 }
 
 function createPolyline (pointsArray){
-  var strip;
   for (i = 0; i < pointsArray.length-1; i++) {
    var strip = new H.geo.Strip();
+   
    strip.pushLatLngAlt(pointsArray[i].lat, pointsArray[i].lng);
    strip.pushLatLngAlt(pointsArray[i+1].lat, pointsArray[i+1].lng);
+   $.post("/maps/get/", {lat1:pointsArray[i].lat, lng1:pointsArray[i].lng, lat2:pointsArray[i+1].lat, lng2:pointsArray[i+1].lng});
    var polyline = new H.map.Polyline(strip, {
         style: {
           lineWidth: 4,
@@ -183,12 +185,9 @@ function createPolyline (pointsArray){
         map.addObject(newPolyline);
         console.log(score);
         map.removeObject(evt.target);
-        var scorePost = new XMLHttpRequest();
-        scorePost.open("POST", '/map/report', false);
-        scorePost.send();
-
-      });
-      map.addObject(polyline);
+        $.post("/maps/report/", score);
+        map.addObject(polyline);
+    });
   }
 }
 
