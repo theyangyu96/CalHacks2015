@@ -6,14 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="">
 <meta name="keywords" content="HTML, CSS, JS, JavaScript, framework, bootstrap, front-end, frontend, web development, showcase, expo">
-<meta name="author" content="Mark Otto, Nicole Bartelt">
-
 <title>
   SkaterPath
 </title>
-
-
-
 <link href="./SkaterPath_files/bootstrap-expo.css" rel="stylesheet">
 <link href="./SkaterPath_files/main.css" rel="stylesheet">
 <!-- RSS Feed -->
@@ -25,14 +20,23 @@
 
 
     <!-- Twitter Cards -->
-    <meta name="twitter:card" content="photo">
-    <meta name="twitter:site" content="@getbootstrap">
-    <meta name="twitter:author" content="@mdo">
-    <meta name="twitter:title" content="Lyft">
-    <meta name="twitter:image:src" content="http://expo.getbootstrap.com/screenshots/lyft.jpg">
-    <meta name="twitter:image:width" content="1200">
-    <meta name="twitter:image:height" content="900">
-  <style type="text/css"></style></head>
+    <meta name="twitter:image:width" content="1000">
+    <meta name="twitter:image:height" content="800">
+
+  <!-- Here Map library requirement -->
+          <link rel="stylesheet" type="text/css"
+        href="https://js.api.here.com/v3/3.0/mapsjs-ui.css" />
+        <script type="text/javascript" charset="UTF-8"
+        src="https://js.api.here.com/v3/3.0/mapsjs-core.js"></script>
+        <script type="text/javascript" charset="UTF-8"
+        src="https://js.api.here.com/v3/3.0/mapsjs-service.js"></script>
+        <script type="text/javascript" charset="UTF-8"
+        src="https://js.api.here.com/v3/3.0/mapsjs-ui.js"></script>
+        <script type="text/javascript" charset="UTF-8"
+        src="https://js.api.here.com/v3/3.0/mapsjs-mapevents.js"></script>
+
+  <style type="text/css"></style>
+  </head>
   <body data-pinterest-extension-installed="cr1.39.1">
 
   <div class="masthead">
@@ -67,26 +71,26 @@
   </div>
 
   <div id="pathInput">
-  <div class="row">
+<!--   <div class="row">
   <div class="col-lg-12">
     <div class="input-group">
       <span class="input-group-btn">
-        <button class="btn btn-default" type="button">Start</button>
+        <button class="btn btn-default" type="button" class="text_button">Start</button>
       </span>
       <input type="text" class="form-control" placeholder="Skate path start from">
-    </div><!-- /input-group -->
-  </div><!-- /.col-lg-6 -->
+    </div>
+  </div>
 </div>
 
   <div class="row">
   <div class="col-lg-12">
     <div class="input-group">
       <span class="input-group-btn">
-        <button class="btn btn-default" type="button">Desti </button>
+        <button class="btn btn-default" type="button" class="text_button">Desti </button>
       </span>
       <input type="text" class="form-control" placeholder="This is my destiny">
-    </div><!-- /input-group -->
-  </div><!-- /.col-lg-6 -->
+    </div>
+  </div>
 </div>
 
   <div class="smallTopMargin">
@@ -99,7 +103,16 @@
       </div>
     </div>
   </div>
-
+ -->
+ <form >
+  Start:<br>
+  <input type="text" name="start_point" id ="start_add">
+  <br>
+  Desti:<br>
+  <input type="text" name="end_point" id="end_add">
+  <br><br>
+  <button type="button" id= "submit">Path</button>
+</form>
  </div>
 
 
@@ -112,10 +125,11 @@
 
     <div class="listing">
       <div class="entry">
-        <a class="entry-thumb" href="https://www.lyft.com/" title="Visit Lyft">
+        <div id="map" style="width: 100%; height: 100vh; background: grey" />
+      <!--   <a class="entry-thumb" href="https://www.lyft.com/" title="Visit Lyft">
           <img src="./SkaterPath_files/lyft.jpg">
           <span class="icon icon-forward entry-icon"></span>
-        </a>
+        </a> -->
     </div>
   </div>
 

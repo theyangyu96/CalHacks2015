@@ -20,3 +20,7 @@
 #submitButton{
 	margin-top: 30px;
 }
+
+.text_button{
+	$(".text_button").disabled = true;
+}
