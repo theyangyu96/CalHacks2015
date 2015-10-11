@@ -82,7 +82,8 @@ var x;
 var y;
 var num_marker = 0;
 var route_counter = 0;
-  map.addEventListener('dbltap', function(evt) {
+var score;
+  map.addEventListener('tap', function(evt) {
       // Log 'tap' and 'mouse' events:
       console.log(evt.type, evt.currentPointer);
       x = evt.currentPointer.viewportX;
@@ -174,9 +175,16 @@ function createPolyline (pointsArray){
           strokeColor: 'rgba(128,0,255,0.7)'
         }
       });
-        var score = prompt("How smooth is this road? Rate 1 - 10","");
+        var rating = prompt("How smooth is this road? Rate 1 - 10","");
+        var tempStrip = newPolyline.getStrip().Oa;
+        score = {a: [tempStrip[0], tempStrip[1]], b: [tempStrip[3], tempStrip[4]] , rating:rating};
         map.addObject(newPolyline);
+        console.log(score);
         map.removeObject(evt.target);
+        var scorePost = new XMLHttpRequest();
+        scorePost.open("POST", '/map/report', false);
+        scorePost.send();
+
       });
       map.addObject(polyline);
   }
