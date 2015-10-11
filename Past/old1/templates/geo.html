@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}
+	<title>Report Page</title>
+{% endblock %}
+
+{% block body %}
+        <div class="container-fluid">
+        	<div class="row">
+        		<div class="col-md-12">
+        			<center>
+        				<br>
+        			Submit Information
+        			</center>
+        		</div>
+        	</div>
+        	<div class="row">
+        		<form id="login_form" method="post" action="/maps/report/">
+        		<div class="col-md-12">
+        			<center>
+					{% csrf_token %}
+					<input id="in1" type="hidden" name="lat" value="" size="50" />
+					<input id="in2" type="hidden" name="lng" value="" size="50" />
+					<br>
+					<br>
+					Quality:
+					<br>
+					<select class="form-control" name="quality">
+						<option>Poor</option>
+						<option>Good</option>
+						<option>Excellent</option>
+					</select>
+					<br>
+					Description:
+					<br>
+					<textarea class="form-control" name="desc" rows="5"></textarea>
+					<br>
+					<input type="submit" name="Report" class="btn" value="Report"/>
+					<center>
+        		</div>
+        		</form>
+        	</div>
+		</div>
+
+
+        <script>
+		var x = document.getElementById("in1");
+		var y = document.getElementById("in2");
+		function getLocation() {
+		    if (navigator.geolocation) {
+		        navigator.geolocation.getCurrentPosition(showPosition);
+		    } else { 
+		        x.innerHTML = "Geolocation is not supported by this browser.";
+		    }
+		}
+
+		function showPosition(position) {
+		    x.value = position.coords.latitude;
+		    y.value = position.coords.longitude;	
+
+		}
+
+		getLocation();
+		
+		</script>
+{% endblock %}

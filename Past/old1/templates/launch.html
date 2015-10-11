@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}
+    <title>The Wave App for Riders</title>
+    <style>
+		html { 
+		  background: url({{STATIC_URL}}bg.jpg) no-repeat center center fixed; 
+		  -webkit-background-size: cover;
+		  -moz-background-size: cover;
+		  -o-background-size: cover;
+		  background-size: cover;
+		}
+	</style>
+{% endblock %}
+
+{% block body %}
+
+	<div class="container">
+	  <br>
+	  <br>
+	  <br>
+	  <br>
+	  <br>
+	  <div class="text-center">
+	    <h1>Waze for Riders</h1>
+	    <p class="lead">An implementation using HERE api.</p>
+	    <br>
+	    <br>
+	    <a href="/maps/" class="btn btn-large"><i class="icon-plane"></i> Maps</a>
+	  </div>
+	  
+	</div><!-- /.container -->
+
+{% endblock %}

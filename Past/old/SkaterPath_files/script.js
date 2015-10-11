@@ -19,7 +19,34 @@ document.getElementById("feedbackButton").addEventListener("click", function(){
     $("#pathInput").hide();
 });
 
+//reverse Geo
+var addressAsString;
 
+function reverseGeo(point){
+  // Create the parameters for the reverse geocoding request:
+  var reverseGeocodingParameters = {
+        prox: point,
+        mode: 'retrieveAddresses',
+        maxresults: 1
+      };
+
+  // Define a callback function to process the response:
+  function onReverseSuccess(result) {
+    var location = result.Response.View[0].Result[0];
+    addressAsString = location.Location.Address.Label;
+  };
+
+  // Get an instance of the geocoding service:
+  var geocoder = platform.getGeocodingService();
+
+  // Call the geocode method with the geocoding parameters,
+  // the callback and an error callback function (called if a
+  // communication error occurs):
+  geocoder.reverseGeocode(
+      reverseGeocodingParameters,
+      onReverseSuccess,
+      onError);
+}
 
 //map part js code
  
@@ -70,6 +97,10 @@ map.addEventListener('dbltap', function(evt) {
       coords.push(pt);
       addMarkersToMap(map, pt.lat, pt.lng);
       num_marker +=1;
+      if(num_marker==1){
+        reverseGeo(pt);
+        console.log(addressAsString,"addresss output");
+      }
       if (num_marker == 2) {
         calculateRouteFromAtoB(platform);
       }
