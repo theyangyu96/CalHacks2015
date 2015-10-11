@@ -34,14 +34,36 @@ function addMarkersToMap(map, lat, lng) {
   map.addObject(Marker);
 }
 
+var geocodingParameters = {
+  //Initialize with address from text field
+  searchText: '210 Stadium Rim Way Berkeley California',
+  jsonattributes : 1
+};
+
+function geocode(platform) {
+  var geocoder = platform.getGeocodingService();
+
+  geocoder.geocode(
+    geocodingParameters,
+    onResult,
+    onError
+  );
+}
+
+function onResult(result) {
+  //TODO: Check if view is empty before accessing; display error message/empty return if empty
+  var locations = result.response.view[0].result;
+  addLocationsToMap(locations);
+}
+
 /*
  * Boilerplate map initialization code starts below:*/
  
 
 //Step 1: initialize communication with the platform
 var platform = new H.service.Platform({
-  app_id: 'DemoAppId01082013GAL',
-    app_code: 'AJKnXv84fjrb0KIHawS0Tg',
+  app_id: 'JJi3EJfcCSqAXMniWrE7',
+    app_code: 'LWcyk9S8poGNtF1Kgrdh0g',
     useCIT: true,
     useHTTPS: true
 });
@@ -76,8 +98,6 @@ var route_counter = 0;
       }
 
   });
-
-
 
 //Routing algorithm
 function calculateRouteFromAtoB (platform) {
@@ -165,7 +185,36 @@ function createPolyline (pointsArray){
 // Create the default UI components
 var ui = H.ui.UI.createDefault(map, defaultLayers);
 
+function addLocationsToMap(locations){
+  var group = new  H.map.Group(),
+    position,
+    i;
+
+  // Add a marker for each location found
+  for (i = 0;  i < locations.length; i += 1) {
+    position = {
+      lat: locations[i].location.displayPosition.latitude,
+      lng: locations[i].location.displayPosition.longitude
+    };
+    marker = new H.map.Marker(position);
+    marker.label = locations[i].location.address.label;
+    group.addObject(marker);
+  }
+
+  group.addEventListener('tap', function (evt) {
+    map.setCenter(evt.target.getPosition());
+    openBubble(
+       evt.target.getPosition(), evt.target.label);
+  }, false);
+
+  // Add the locations group to the map
+  map.addObject(group);
+  map.setCenter(group.getBounds().getCenter());
+}
+
 // Now use the map as required...
+geocode(platform);
+
 setMapViewBounds(map);
   </script>
 </body>
