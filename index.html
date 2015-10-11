@@ -52,8 +52,10 @@ function geocode(platform) {
 
 function onResult(result) {
   //TODO: Check if view is empty before accessing; display error message/empty return if empty
-  var locations = result.response.view[0].result;
-  addLocationsToMap(locations);
+  if(result.response.view.length > 0){
+    var locations = result.response.view[0].result;
+    addLocationsToMap(locations);
+  }
 }
 
 /*
