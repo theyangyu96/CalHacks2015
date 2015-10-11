@@ -1,49 +1,126 @@
-<html>
-  <head>
-    <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
-	<script src="http://js.api.here.com/v3/3.0/mapsjs-core.js" 
-	   type="text/javascript" charset="utf-8"></script>
-	<script src="http://js.api.here.com/v3/3.0/mapsjs-service.js" 
-	   type="text/javascript" charset="utf-8"></script>
-	<script src="http://js.api.here.com/v3/3.0/mapsjs-mapevents.js" 
-	   type="text/javascript" charset="utf-8"></script>
-  </head>
-  <body>
-    <div style="width: 640px; height: 480px" id="mapContainer"></div>
-    <script>
-      // Initialize the platform object:
-      var platform = new H.service.Platform({
-        'app_id': 'JJi3EJfcCSqAXMniWrE7',
-        'app_code': 'LWcyk9S8poGNtF1Kgrdh0g'
-      });
+<!DOCTYPE html>
+<!-- saved from url=(0045)http://expo.getbootstrap.com/2014/10/29/lyft/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="keywords" content="HTML, CSS, JS, JavaScript, framework, bootstrap, front-end, frontend, web development, showcase, expo">
+<meta name="author" content="Mark Otto, Nicole Bartelt">
 
-      // Obtain the default map types from the platform object
-      var maptypes = platform.createDefaultLayers();
+<title>
+  SkaterPath
+</title>
 
-      // Instantiate (and display) a map object:
-      var map = new H.Map(
-        document.getElementById('mapContainer'),
-        maptypes.normal.map,
-        {
-          zoom: 10,
-          center: { lng: 11.4, lat: 52.51 }
-        });
-     // Enable the event system on the map instance:
-	var mapEvents = new H.mapevents.MapEvents(map);
 
-	// Add event listeners:
-	map.addEventListener('tap', function(evt) {
-    	// Log 'tap' and 'mouse' events:
-    	//var mark = map.screenToGeo(20, 20);
-    	// var x = evt.currentPointer.viewPortX;
-    	// console.log(x);
-    	var mark = map.screenToGeo(evt.currentPointer.viewportX, evt.currentPointer.viewportY);
-    	console.log(mark); 
-    	//console.log(evt.type, evt.currentPointer); 
-	});
 
-	// Instantiate the default behavior, providing the mapEvents object: 
-	var behavior = new H.mapevents.Behavior(mapEvents);
-    </script>
-  </body>
+<link href="./SkaterPath_files/bootstrap-expo.css" rel="stylesheet">
+<link href="./SkaterPath_files/main.css" rel="stylesheet">
+<!-- RSS Feed -->
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://expo.getbootstrap.com/feed.xml">
+
+<!-- Favicons -->
+<link rel="icon" href="http://expo.getbootstrap.com/favicon.ico">
+<link rel="apple-touch-icon" href="http://expo.getbootstrap.com/apple-touch-icon.png">
+
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="photo">
+    <meta name="twitter:site" content="@getbootstrap">
+    <meta name="twitter:author" content="@mdo">
+    <meta name="twitter:title" content="Lyft">
+    <meta name="twitter:image:src" content="http://expo.getbootstrap.com/screenshots/lyft.jpg">
+    <meta name="twitter:image:width" content="1200">
+    <meta name="twitter:image:height" content="900">
+  <style type="text/css"></style></head>
+  <body data-pinterest-extension-installed="cr1.39.1">
+
+  <div class="masthead">
+  <h1 class="masthead-title">
+    <a href="http://expo.getbootstrap.com/">Start You SkatePath Journey</a>
+  </h1>
+
+  <ul class="nav nav-tabs">
+  <li role="presentation" id ="searchButton"><a href="#pathInput">Search</a></li>
+  <li role="presentation" id ="feedbackButton" ><a href="#feedBackPanel">Feedback</a></li>
+  </ul>
+  
+  <div id="feedbackPanel">
+       <div class="btn-group" role="group" aria-label="...">
+          <button type="button" class="btn btn-default">Flat</button>
+          <button type="button" class="btn btn-default">Bumpy</button>
+          <button type="button" class="btn btn-default">Terrible</button>
+       </div>
+       <div class="btn-group" role="group" aria-label="...">
+          <button type="button" class="btn btn-default">1</button>
+          <button type="button" class="btn btn-default">2</button>
+          <button type="button" class="btn btn-default">3</button>
+          <button type="button" class="btn btn-default">4</button>
+          <button type="button" class="btn btn-default">5</button>
+          <button type="button" class="btn btn-default">6</button>
+       </div>
+       <div id="submitButton" class="row">
+          <div class="col-lg-6">
+            <button type="button">Submit</button>
+          </div>
+       </div>
+  </div>
+
+  <div id="pathInput">
+  <div class="row">
+  <div class="col-lg-12">
+    <div class="input-group">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="button">Start</button>
+      </span>
+      <input type="text" class="form-control" placeholder="Skate path start from">
+    </div><!-- /input-group -->
+  </div><!-- /.col-lg-6 -->
+</div>
+
+  <div class="row">
+  <div class="col-lg-12">
+    <div class="input-group">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="button">Desti </button>
+      </span>
+      <input type="text" class="form-control" placeholder="This is my destiny">
+    </div><!-- /input-group -->
+  </div><!-- /.col-lg-6 -->
+</div>
+
+  <div class="smallTopMargin">
+    <div class="row"  >
+      <div class="col-lg-6" >
+        <button type="Path"> Route </button>
+      </div>
+      <div class="col-lg-6">
+        <button type="Path"> Clear </button>
+      </div>
+    </div>
+  </div>
+
+ </div>
+
+
+
+
+  <hr class="masthead-hr">
+  <hr class="masthead-hr visible-xs">
+</div>
+
+
+    <div class="listing">
+      <div class="entry">
+        <a class="entry-thumb" href="https://www.lyft.com/" title="Visit Lyft">
+          <img src="./SkaterPath_files/lyft.jpg">
+          <span class="icon icon-forward entry-icon"></span>
+        </a>
+    </div>
+  </div>
+
+<script src="./SkaterPath_files/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="./SkaterPath_files/script.js"></script>
+
+</body>
 </html>
